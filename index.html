@@ -1750,6 +1750,88 @@
                 <!-- STANDINGS ROW -->
 
             </div>
+        <!--// GROUPS //-->
+
+
+                    <!-- MATCHES -->
+        <div id="matches " class="mt-5">
+            <div class="row" style="margin:0px">
+                <h1 style="direction: rtl;">
+                    <b>المباريات</b>
+                </h1>
+                <hr>
+
+                <div class="row mb-5" id="matches">
+
+                    <!-- MATCH COL -->
+                    <div class="col-lg-12" >
+
+                        <div class="card shadow rounded-pill mt-5" style="overflow: hidden">
+                            <!-- <div class="card-header bg-primary" style="text-align: center">
+                                <b>Group (A)</b>
+                            </div> -->
+
+                            <!-- MATCH CARD -->
+                            <div class="card-body p-0">
+                                <div class="row">
+
+                                    <!-- FIRST TEAM COL -->
+                                    <div class="col-lg-3 bg-primary d-flex flex-direction-column justify-content-center align-items-center" style="border-right: solid 5px #5b0d25;">
+                                        <div class="d-flex align-items-center justify-content-center" style="text-align: center; margin: auto 0">
+                                        
+                                            <div>
+                                                <div class="flag">
+                                                    <img 
+                                                        class="rounded-circle border border-2" 
+                                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Flag_of_Saudi_Arabia.svg/560px-Flag_of_Saudi_Arabia.svg.png" 
+                                                        alt=""
+                                                        style="width: 40px; height: 40px"
+                                                    >
+                                                </div>
+                                                <h5 style="margin:auto 4px">KSA</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--// FIRST TEAM COL //-->
+
+                                    <!-- VERSUS COL -->
+                                    <div class="col-lg-6" style="text-align: center">
+                                        <h6>group (A)</h6>
+                                        <h1>X</h1>                                        
+                                        <h6>18:30</h6>
+                                    </div>
+                                    <!--// VERSUS COL //-->
+
+
+                                    <!-- SECOND TEAM COL -->
+                                    <div class="col-lg-3 bg-primary d-flex flex-direction-column justify-content-center align-items-center" style="border-left: solid 5px #5b0d25;">
+                                        <div class="d-flex align-items-center justify-content-center" style="text-align: center; margin: auto 0">
+                                        
+                                            <div>
+                                                <div class="flag">
+                                                    <img 
+                                                        class="rounded-circle border border-2" 
+                                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Flag_of_Saudi_Arabia.svg/560px-Flag_of_Saudi_Arabia.svg.png" 
+                                                        alt=""
+                                                        style="width: 40px; height: 40px"
+                                                    >
+                                                </div>
+                                                <h5 style="margin:auto 4px">KSA</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--// SECOND TEAM COL //-->
+                                </div>
+                            </div>
+                            <!--// MATCH CARD //-->
+                        </div>
+                    </div>
+                    <!--// MATCH COL //-->
+    
+                </div>
+            </div>
+        </div>
+        <!--// MATCHES //-->
         </div>
                 
          <!-- HEADER -->
@@ -1761,12 +1843,12 @@
     <script>
 
         
-        
+        const token = "93843f21435d46969b3153324453f4bf";
+        let baseUrl = "https://api.football-data.org/v4"
         
         function getStandings()
         {
-            const token = "93843f21435d46969b3153324453f4bf";
-            let baseUrl = "https://api.football-data.org/v4"
+
             const url = `${baseUrl}/competitions/2000/standings`
             axios.get(url,{
                 method: 'get',
@@ -1856,7 +1938,119 @@
             })
         }
         
-        getStandings()
+    getStandings()  
+
+        function getMatches()
+        {
+            const url = `${baseUrl}/competitions/2000/matches`
+            console.log(url, token)
+            axios.get(url, {
+                headers: {
+                    "X-Auth-Token": `${token}`
+                }
+            })
+            .then((response) => {
+                const matches = response.data.matches
+                
+                document.getElementById("matches").innerHTML = ""
+
+                for(match of matches)
+                {
+                    const homeTeam = match.homeTeam
+                    const awayTeam = match.awayTeam
+
+                    if(homeTeam.name == null)
+                    {
+                        continue
+                    }
+
+                    const comp = match.competition
+                    const dateUtc = match.utcDate
+                    const matchTime = new Date(dateUtc)
+                    const dateString = matchTime.getUTCFullYear() +"/"+ (matchTime.getUTCMonth()+1) +"/"+ matchTime.getUTCDate() + " " + matchTime.getUTCHours() + ":" + matchTime.getUTCMinutes() + ":" + matchTime.getUTCSeconds()
+                    
+
+                    
+                    const content = `
+                        <!-- MATCH COL -->
+                        <div class="col-lg-12" >
+                            <div class="card shadow rounded-pill mt-5" style="overflow: hidden">                            
+                                <!-- MATCH CARD -->
+                                <div class="card-body p-0">
+                                    <div class="row">
+                                        <!-- FIRST TEAM COL -->
+                                        <div class="col-lg-3 bg-primary d-flex flex-direction-column justify-content-center align-items-center" style="border-right: solid 5px #5b0d25;">
+                                            <div class="d-flex align-items-center justify-content-center" style="text-align: center; margin: auto 0">
+                                            
+                                                <div>
+                                                    <div class="flag">
+                                                        <img 
+                                                            class="rounded-circle border border-2" 
+                                                            src="${homeTeam.crest}" 
+                                                            alt=""
+                                                            style="width: 40px; height: 40px; object-fit: cover"
+                                                        >
+                                                    </div>
+                                                    <h5 style="margin:auto 4px">${homeTeam.tla}</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--// FIRST TEAM COL //-->
+                                        <!-- VERSUS COL -->
+                                        <div class="col-lg-6" style="text-align: center">
+                                            <div class="row">
+                                                <div class="col-lg-4" style="margin: auto 0px">
+                                                    <h3>
+                                                        ${match.score.fullTime.home ?? '-'}
+                                                    </h3>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <h6>${match.group}</h6>
+                                                    <h1>X</h1>                                        
+                                                    <h6>${dateString}</h6>
+                                                </div>
+                                                <div class="col-lg-4" style="margin: auto 0px">
+                                                    <h3>
+                                                        ${match.score.fullTime.away ?? '-'}
+                                                    </h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--// VERSUS COL //-->
+                                        <!-- SECOND TEAM COL -->
+                                        <div class="col-lg-3 bg-primary d-flex flex-direction-column justify-content-center align-items-center" style="border-left: solid 5px #5b0d25;">
+                                            <div class="d-flex align-items-center justify-content-center" style="text-align: center; margin: auto 0">
+                                            
+                                                <div>
+                                                    <div class="flag">
+                                                        <img 
+                                                            class="rounded-circle border border-2" 
+                                                            src="${awayTeam.crest}" 
+                                                            alt=""
+                                                            style="width: 40px; height: 40px; object-fit: cover"
+                                                        >
+                                                    </div>
+                                                    <h5 style="margin:auto 4px">${awayTeam.tla}</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--// SECOND TEAM COL //-->
+                                    </div>
+                                </div>
+                                <!--// MATCH CARD //-->
+                            </div>
+                        </div>
+                        <!--// MATCH COL //-->
+                        
+                    `
+                    document.getElementById("matches").innerHTML += content
+                }
+            })
+        }
+    
+    getMatches()
+    
+    
     </script>
 
 </html>
